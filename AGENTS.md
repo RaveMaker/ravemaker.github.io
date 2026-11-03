@@ -1,0 +1,54 @@
+# RaveMaker GitHub profile
+
+## User constraints
+
+- Do not commit or push. The user handles Git operations.
+- This is a developer profile, not a replacement for ravemaker.net or a separate “Lab.”
+- User-selected intro: “It worked on my machine. Now it’s your problem.” Stored in `site.config.json`.
+- Do not show the three account-link boxes beneath the hero intro; account navigation lives in the repository directory tabs.
+- Header identity label is “Adam Mallul / RaveMaker”, matching the footer's name/handle order.
+- Header navigation contains the personal website and theme switch. GitHub and GitLab logo links sit on the right of the Selected work heading; the most-starred note sits beneath its title on the left. GitLab is `https://gitlab.com/RaveMaker`, configured in site.config.json.
+- Code-profile links use locally stored Simple Icons SVG logos (`src/assets/icons/`), bundled by Astro via relative CSS mask URLs in compact rounded links: theme-aware GitHub, orange GitLab. Relative source paths also resolve correctly in the IDE. Keep accessible names, hover/focus states, and 44px targets; no visible text or arrows. Icon source: https://github.com/simple-icons/simple-icons (CC0 icons).
+- Footer shows identity and “Updated [date]”, without a data snapshot link. The static JSON file remains available.
+- Preserve the selected Signal design: orange accents, restrained dark/light surfaces, selected projects, searchable repository directory.
+- Theme follows the OS when no valid saved preference exists, including OS changes while open. Manual toggle persists an override; unavailable localStorage still permits OS defaults and manual changes. Keep theme-color metadata synchronized with the active background.
+- Supporting interface text has an 11px minimum (dates, footer, badges, eyebrows, column captions, account counts, and repository metadata). The tiny decorative lettering inside the aria-hidden RM graphic is exempt. Optional suggestions to add a mobile name, hide empty metadata, or simplify result counts were declined.
+
+Optional fixes 1 and 3 were subsequently approved: 12 tests pass, including OS-theme initialization, saved override, and unavailable-storage cases. Browser checks at 375/768/1280px in both themes found no visible interface text below 11px, no horizontal overflow, and correctly synchronized theme-color metadata.
+- `SignalDivider.astro` separates the hero (00) from Selected work (01) with a slim 40px full-width oscilloscope waveform: three tapered sine traces, orange glow, faded edges, and slow CSS amplitude modulation. SVG geometry is generated at build time; no runtime JS. Reduced-motion uses static traces. Replaces the initial straight-line sweep.
+- Only page-level separator lines (header, statistics, personal note, footer) have a delicate staggered 12-second border-color animation, blending at most 12% accent into the normal border. No separator hover effects. No ambient animation on repository rows, tabs, pagination, or featured-card inner rules; the separately requested row hover remains. Reduced-motion disables the ambient animation.
+- Browser code must not call GitHub’s API. Public repository data is fetched only by an explicit refresh/build workflow.
+- Refresh on manual dispatch and pushes to main only. The user removed the monthly schedule because inactive repositories can have scheduled Actions disabled. Do not add scheduled triggers or keepalive commits.
+- Generated deployments and fresh snapshots must not require recurring commits.
+- Both highlights must be the two most-starred public repositories owned by RaveMaker, automatically ranked from the snapshot at build time (name breaks star-count ties). Use actual repository names/descriptions rather than manually selected cross-account highlights.
+- The four repository statistics belong inside Selected work beneath the two featured project cards. Center the group and each statistic's text (four columns on desktop, two on mobile). Do not show the central refresh note; the update date remains in the footer.
+- Directory uses RaveMaker, ERPXE, and ITekBlog account tabs, defaults to RaveMaker, and displays 10 repositories per page. Changing tabs resets the page; clearing filters preserves the selected account. Tabs support arrow/Home/End keyboard navigation and share one labeled results panel.
+- The repository-type dropdown (All repositories / Original / Archived / Forks) was removed at the user's request. Keep account tabs, search, language filtering, and sorting; repository badges still show archive/fork status.
+- Repository metadata places star/fork counts to the right of the language on the same row, with the push date underneath.
+- Hovering or focusing a repository row highlights its entire background with a faint accent tint and a slim inset left accent. Rows and column captions have 16px horizontal padding to keep text clear of the highlight edges. No layout shift; row links retain their own focus outline.
+- The repository title's native link stretches over the full row using an absolute pseudo-element. Clicking anywhere in a row opens its repository; row highlight replaces the title-only hover color. Preserve keyboard navigation and native link behavior.
+- Directory star/fork indicators use inline SVG icons: filled gold star and blue fork, with darker colors in light theme. Numeric counts retain neutral text and accessible labels.
+- Shared `DEFAULT_FILTERS` defines empty query/language and recent-push sorting. Both clear buttons explicitly assign these defaults and reset page 1, preserving account; do not rely on native reset/microtask ordering. Empty-state reset focuses search. When pagination disables the activated button, focus moves to the other enabled pagination button.
+- `STAR_ICON`, `FORK_ICON`, and `countLabel` are shared by directory and featured cards. Both featured repos show gold stars and blue forks with counts, matching directory styling. Icons are aria-hidden; visible counts have sr-only singular/plural nouns rather than aria-label on generic spans. Repository-type filter logic is removed; archived/fork badges remain.
+
+## Architecture
+
+Astro 7.4.5 with static output, ES modules, vanilla client JS, and no UI framework or server adapter. Node >=22.23.4 required; prefer Node 24 LTS. This workstation has Node 24.15.0 installed via nvm-windows, but Node 22.17.0 was active before migration. Do not change the global Node selection without user instruction; use the installed Node 24 binary for agent validation. Astro 6 was considered for compatibility but rejected after npm reported known advisories; Astro 7.4.5 installed with zero audit findings.
+
+Run `npm ci` in a new checkout. `npm run dev` uses Astro at localhost:5173 with HMR; a small Vite plugin also reloads on snapshot changes. `npm run build` prerenders into ignored `dist/`, using ignored `.cache/repos.json` or falling back to tracked `data/repos.json`. Build is offline. `npm run preview` uses Astro preview at localhost:4173. Track package-lock.json; ignore node_modules, .astro, .cache, and dist.
+
+`npm run refresh-data` collects public owned repositories across RaveMaker, ERPXE, ITekBlog. It follows REST pagination (initially 159 repos in 4 requests), normalizes only public fields, and atomically writes `.cache/repos.json` after all accounts succeed with at least one public owned repository each. Empty/missing accounts fail before any snapshot write. Failure must not publish a partial snapshot. Optional GH_TOKEN/GITHUB_TOKEN is read from environment only.
+
+`site.config.json` controls identity, account list, canonical URL, and featured projects. `src/pages/index.astro` composes `PageLayout.astro`, header, featured cards, directory, and footer components. `scripts/snapshot.mjs` validates and loads saved data; it is server/build-only and must never be imported by browser code. The directory prerenders all repository rows for no-JS accessibility/SEO and embeds script-safe JSON for browser filtering. `src/repositories.js` shares filtering and escaped row rendering between Node and browser. Astro escapes component expressions; `set:html` is only used for the tested escaped row renderer and script-safe JSON. Repository links must remain HTTPS GitHub URLs. `src/app.js` is bundled by Astro and adds account tabs, local search, language filter, sort, 10-row pagination, URL state, and persisted theme. Astro handles live reload; the former custom build/server and browser EventSource code were removed.
+
+`src/pages/data/repos.json.js`, `robots.txt.js`, and `sitemap.xml.js` are static build-time routes. They do not create runtime API endpoints. `public/favicon.png` and `public/apple-touch-icon.png` are exact copies of ravemaker-net's `app/icon.png` and `app/apple-icon.png`, replacing the initial SVG monogram favicon. The .nojekyll file is also in public/. Keep the site root URL https://ravemaker.github.io; no project-repository base path.
+
+The workflow refreshes data, builds, uploads the entire Pages artifact, and deploys on main-branch pushes or manual dispatch only. No scheduled trigger, gh-pages branch, or data commits.
+
+Official action majors checked on 2026-11-03: checkout@v7, setup-node@v7, upload-pages-artifact@v5, deploy-pages@v5. Keep push/manual triggers, permissions, and job structure. `src/styles.css` is formatted and consolidated into base rules and grouped 1050/850/580/380px breakpoints, then reduced-motion. Preserve mobile 16px row padding and the final three-column desktop/two-column mobile filter layout when editing the cascade.
+
+## Validation
+
+Run `npm test` for API pagination/failures, filter/sort, escaped rows, offline seed/cache precedence, invalid snapshots, and safe JSON serialization. Run `npm run build` and `npm run verify:build` to verify the complete static artifact, repository rows, selected highlights, tabs, and bundled assets. The Pages workflow uses Node 24 and npm ci before tests/refresh/build/verification. Test the browser when preview infrastructure permits; do not claim visual QA if it was unavailable. Keep user-staged changes intact.
+
+2026-11-03 review validation: ten Node tests pass. CSS before/after comparisons at 375px, 768px, and 1280px in dark and light themes had identical measured layout, typography, and spacing for the hero, featured cards, stats, filters, rows, and signal divider, with no horizontal overflow. Browser checks passed native mouse-click clearing, empty-state reset preserving ERPXE and focusing search, tab keyboard navigation, and focus transfer at first/last pagination boundaries (RaveMaker page 5 and ERPXE page 12). A temporary local copy with CSP blocking all scripts still displayed all 159 repository rows; this checked script-blocked fallback, not a browser-wide JavaScript-disabled setting. Temporary QA HTML was removed. Optional review suggestions were not applied.

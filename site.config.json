@@ -1,0 +1,15 @@
+{
+  "title": "RaveMaker — Behind the builds",
+  "name": "Adam Mallul",
+  "handle": "RaveMaker",
+  "website": "https://ravemaker.net",
+  "github": "https://github.com/RaveMaker",
+  "gitlab": "https://gitlab.com/RaveMaker",
+  "url": "https://ravemaker.github.io",
+  "intro": "It worked on my machine. Now it’s your problem.",
+  "accounts": ["RaveMaker", "ERPXE", "ITekBlog"],
+  "featured": {
+    "account": "RaveMaker",
+    "limit": 2
+  }
+}

@@ -1,0 +1,16 @@
+---
+import { STAR_ICON, FORK_ICON, countLabel, safeGitHubUrl, formatNumber } from '../repositories.js';
+const { repo, index } = Astro.props;
+---
+<a class="featured-card" href={safeGitHubUrl(repo.url)}>
+  <div class="featured-top"><span class="eyebrow">{repo.language || 'Repository'} · {repo.owner}</span><span class="feature-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span></div>
+  <h3>{repo.name} <span aria-hidden="true">↗</span></h3>
+  <p>{repo.description || 'No description provided.'}</p>
+  <div class="featured-bottom">
+    <span>{repo.fullName}</span>
+    <div class="repo-numbers">
+      <span><Fragment set:html={STAR_ICON} />{formatNumber(repo.stars)}<span class="sr-only">{countLabel(repo.stars, 'star')}</span></span>
+      <span><Fragment set:html={FORK_ICON} />{formatNumber(repo.forks)}<span class="sr-only">{countLabel(repo.forks, 'fork')}</span></span>
+    </div>
+  </div>
+</a>

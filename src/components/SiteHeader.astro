@@ -1,0 +1,11 @@
+---
+const { config } = Astro.props;
+---
+<header class="site-header">
+  <a class="wordmark" href="/" aria-label="RaveMaker home">&lt;RM <span>/</span>&gt;</a>
+  <span class="header-label">{config.name} <span>/</span> {config.handle}</span>
+  <nav class="header-links" aria-label="Main navigation">
+    <a href={config.website}>Personal website <span aria-hidden="true">↗</span></a>
+    <button class="theme-toggle" type="button" aria-label="Switch to light theme" hidden><span class="theme-icon" aria-hidden="true">☼</span></button>
+  </nav>
+</header>

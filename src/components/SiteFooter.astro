@@ -1,0 +1,8 @@
+---
+import { formatDate } from '../repositories.js';
+const { config, snapshot } = Astro.props;
+---
+<footer class="site-footer">
+  <p>© {new Date(snapshot.generatedAt).getUTCFullYear()} {config.name} <span> / </span> {config.handle}</p>
+  <div><span>Updated <time datetime={snapshot.generatedAt}>{formatDate(snapshot.generatedAt)}</time></span></div>
+</footer>

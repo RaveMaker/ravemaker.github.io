@@ -1,0 +1,20 @@
+{
+  "name": "ravemaker-github-profile",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview --port 4173",
+    "refresh-data": "node scripts/refresh-data.mjs",
+    "test": "node --test",
+    "verify:build": "node scripts/verify-build.mjs"
+  },
+  "dependencies": {
+    "astro": "7.4.5"
+  }
+}

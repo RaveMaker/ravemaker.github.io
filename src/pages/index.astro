@@ -1,0 +1,55 @@
+---
+import config from '../../site.config.json';
+import { loadProfile } from '../../scripts/snapshot.mjs';
+import { formatNumber } from '../repositories.js';
+import PageLayout from '../layouts/PageLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import FeaturedProject from '../components/FeaturedProject.astro';
+import RepositoryDirectory from '../components/RepositoryDirectory.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SignalDivider from '../components/SignalDivider.astro';
+
+const { snapshot, featured, stats } = await loadProfile(config);
+const metrics = [
+  [stats.repositories, 'public repositories'],
+  [stats.stars, 'stars across projects'],
+  [stats.forks, 'forks across projects'],
+  [config.accounts.length, 'connected accounts']
+];
+---
+<PageLayout config={config}>
+  <SiteHeader config={config} />
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="signal-dot" aria-hidden="true"></span> Systems · code · open source</p>
+        <h1 id="hero-title">Behind the builds<span>.</span></h1>
+        <p class="hero-description">{config.intro}</p>
+      </div>
+      <div class="hero-profile">
+        <div class="monogram" aria-hidden="true"><div class="monogram-inner">RM<span>BUILD / SHARE / REPEAT</span></div><span class="corner corner-tl"></span><span class="corner corner-br"></span></div>
+      </div>
+    </section>
+    <SignalDivider />
+    <section class="selected-work" aria-labelledby="selected-title">
+      <div class="section-heading selected-heading">
+        <div>
+          <p class="eyebrow">01 / Highlights</p>
+          <h2 id="selected-title">Selected work</h2>
+          <p class="selected-description">Most-starred repositories on {config.featured.account}.</p>
+        </div>
+        <nav class="profile-links" aria-label="Code profiles">
+          <a href={config.github} aria-label="RaveMaker on GitHub" title="GitHub"><span class="profile-logo github-logo" aria-hidden="true"></span></a>
+          <a href={config.gitlab} aria-label="RaveMaker on GitLab" title="GitLab"><span class="profile-logo gitlab-logo" aria-hidden="true"></span></a>
+        </nav>
+      </div>
+      <div class="featured-grid">{featured.map((repo, index) => <FeaturedProject repo={repo} index={index} />)}</div>
+      <div class="stats" role="group" aria-label="Public repository statistics">
+        {metrics.map(([value, label]) => <div class="stat"><strong>{formatNumber(value)}</strong><span>{label}</span></div>)}
+      </div>
+    </section>
+    <RepositoryDirectory config={config} snapshot={snapshot} />
+    <aside class="personal-note"><div><p class="eyebrow">The person behind the code</p><p>Engineering by day. Music after hours.</p></div><a href={config.website}>Meet {config.handle} <span aria-hidden="true">↗</span></a></aside>
+  </main>
+  <SiteFooter config={config} snapshot={snapshot} />
+</PageLayout>

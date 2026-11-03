@@ -1,0 +1,35 @@
+---
+import '../styles.css';
+const { config } = Astro.props;
+---
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="description" content="Explore Adam Mallul’s open-source work across RaveMaker, ERPXE, and ITekBlog. Network boot, containers, scripts, and the web." />
+    <meta name="theme-color" content="#0c111b" />
+    <meta property="og:title" content={config.title} />
+    <meta property="og:description" content="Systems, code, and open source. Explore the projects behind RaveMaker." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={`${config.url}/`} />
+    <title>{config.title}</title>
+    <link rel="canonical" href={`${config.url}/`} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script is:inline>
+      let savedTheme;
+      try { savedTheme = localStorage.getItem('rm-theme'); } catch {}
+      const theme = savedTheme === 'light' || savedTheme === 'dark'
+        ? savedTheme
+        : matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.dataset.theme = theme;
+      document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#f7f8fa' : '#0c111b';
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#repositories">Skip to repositories</a>
+    <div class="page-shell"><slot /></div>
+  </body>
+</html>

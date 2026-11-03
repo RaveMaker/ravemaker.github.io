@@ -1,0 +1,32 @@
+---
+import { filterRepositories, renderRepository, formatNumber } from '../repositories.js';
+import { serializeSnapshot } from '../../scripts/snapshot.mjs';
+const { config, snapshot } = Astro.props;
+const repositories = snapshot.repositories;
+const languages = [...new Set(repositories.map(repo => repo.language || 'Unspecified'))].sort();
+const accountCount = account => repositories.filter(repo => repo.owner.toLowerCase() === account.toLowerCase()).length;
+---
+<section id="repositories" class="directory" aria-labelledby="directory-title">
+  <div class="section-heading"><div><p class="eyebrow">02 / The collection</p><h2 id="directory-title">Repository directory</h2></div><p id="result-count" role="status" aria-live="polite">{formatNumber(repositories.length)} repositories</p></div>
+  <div id="account-tabs" class="account-tabs" role="tablist" aria-label="Repository account" hidden>
+    {config.accounts.map((account, index) => <button type="button" role="tab" id={`account-tab-${index}`} aria-controls="account-panel" aria-selected={String(account === config.handle)} tabindex={account === config.handle ? 0 : -1} data-account={account}>{account} <span>{formatNumber(accountCount(account))}</span></button>)}
+  </div>
+  <div id="account-panel" role="tabpanel" aria-labelledby="directory-title">
+    <form id="filters" class="filters" aria-label="Filter repositories" hidden>
+      <input name="account" type="hidden" value={config.handle} />
+      <label class="search-field"><span class="sr-only">Find a repository</span><span class="search-mark" aria-hidden="true">⌕</span><input name="query" type="search" placeholder="Find a repository…" autocomplete="off" /></label>
+      <label><span class="sr-only">Language</span><select name="language"><option value="">All languages</option>{languages.map(language => <option value={language}>{language}</option>)}</select></label>
+      <label><span class="sr-only">Sort repositories</span><select name="sort"><option value="pushed">Recently pushed</option><option value="stars">Most stars</option><option value="name">Name A–Z</option></select></label>
+      <button id="clear-filters" class="clear-button" type="button">Clear filters <span aria-hidden="true">×</span></button>
+    </form>
+    <noscript><p class="noscript-note">All repositories are listed below. Enable JavaScript to search, filter, and sort.</p></noscript>
+    <div class="directory-caption"><span>Repository / description</span><span>Language / activity</span></div>
+    <div id="repo-list" set:html={filterRepositories(repositories).map(renderRepository).join('')} />
+    <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">⌕</span><h3>No repositories found.</h3><p>Try another search or clear the filters.</p><button type="button" id="empty-reset">Clear filters</button></div>
+    <div id="pagination" class="pagination" hidden><p id="page-summary"></p><div><button id="previous-page" type="button">← Previous</button><button id="next-page" type="button">Next →</button></div></div>
+  </div>
+</section>
+<script id="repository-data" type="application/json" is:inline set:html={serializeSnapshot(snapshot)} />
+<script>
+  import '../app.js';
+</script>
