@@ -8,7 +8,7 @@ const { config } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
-    <meta name="description" content="Explore Adam Mallul’s open-source work across RaveMaker, ERPXE, and ITekBlog. Network boot, containers, scripts, and the web." />
+    <meta name="description" content={`Explore Adam Mallul’s open-source work across ${config.accounts.join(' and ')}. Network boot, containers, scripts, and the web.`} />
     <meta name="theme-color" content="#0c111b" />
     <meta property="og:title" content={config.title} />
     <meta property="og:description" content="Systems, code, and open source. Explore the projects behind RaveMaker." />

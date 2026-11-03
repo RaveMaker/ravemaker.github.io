@@ -7,7 +7,7 @@
   "gitlab": "https://gitlab.com/RaveMaker",
   "url": "https://ravemaker.github.io",
   "intro": "It worked on my machine. Now it’s your problem.",
-  "accounts": ["RaveMaker", "ERPXE", "ITekBlog"],
+  "accounts": ["RaveMaker", "ERPXE"],
   "featured": {
     "account": "RaveMaker",
     "limit": 2

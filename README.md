@@ -1,6 +1,6 @@
 # RaveMaker — Behind the builds
 
-A static developer profile for [RaveMaker](https://github.com/RaveMaker), [ERPXE](https://github.com/ERPXE), and [ITekBlog](https://github.com/ITekBlog). Built with **Astro 7**, CSS, and vanilla browser JavaScript. No React, deployed server, personal access token, or browser requests to GitHub are required.
+A static developer profile for [RaveMaker](https://github.com/RaveMaker) and [ERPXE](https://github.com/ERPXE). Built with **Astro 7**, CSS, and vanilla browser JavaScript. No React, deployed server, personal access token, or browser requests to GitHub are required.
 
 ## Work locally
 
@@ -49,7 +49,7 @@ The checked-in `data/repos.json` is the initial real snapshot for offline develo
 
 Highlights automatically select the two most-starred public repositories owned by **RaveMaker**, using the saved snapshot; ties are sorted by repository name. `featured.account` and `featured.limit` in the configuration control this selection. Cards use GitHub’s repository names and descriptions. Changing collected accounts requires a refresh. GitHub’s primary repository language is shown; repositories with no detected language are labeled **Unspecified**. Original repositories, archived repositories, and forks are distinguishable in the directory. A recent push does not imply a release or a maintained project.
 
-The page contains all repositories in generated HTML, so content and links work without JavaScript. With JavaScript, the directory opens on the **RaveMaker** tab, with separate **ERPXE** and **ITekBlog** tabs and **10 results per page**. Tabs support arrow keys, Home, and End. Changing accounts resets pagination; clearing search/filters keeps the selected account. Search, account tabs, language filtering, and sorting operate entirely on embedded snapshot data. Filter and page state can be shared in the URL. The same public snapshot is also served at `/data/repos.json`.
+The page contains all repositories in generated HTML, so content and links work without JavaScript. With JavaScript, the directory opens on the **RaveMaker** tab, with a separate **ERPXE** tab and **10 results per page**. Tabs support arrow keys, Home, and End. Changing accounts resets pagination; clearing search/filters keeps the selected account. Search, account tabs, language filtering, and sorting operate entirely on embedded snapshot data. Filter and page state can be shared in the URL. The same public snapshot is also served at `/data/repos.json`. Accounts removed from configuration are also excluded from older cached data and totals.
 
 Both clear buttons explicitly restore empty search/language filters, recent-push sorting, and page 1 without changing the account. The empty-state clear button focuses search. At pagination boundaries, focus moves to the remaining enabled navigation button. Star/fork metrics share accessible SVG icons and singular/plural text labels. The former repository-type filter has been removed from both the UI and filtering logic; archived/fork badges remain.
 
@@ -67,6 +67,6 @@ Each run uses Node 24, installs dependencies with `npm ci`, tests the source, fe
 
 The workflow uses current official major releases: [checkout@v7](https://github.com/actions/checkout/releases/latest), [setup-node@v7](https://github.com/actions/setup-node/releases/latest), [upload-pages-artifact@v5](https://github.com/actions/upload-pages-artifact/releases/latest), and [deploy-pages@v5](https://github.com/actions/deploy-pages/releases/latest). These replace the older v4 actions while preserving the same build/deploy jobs, permissions, and triggers.
 
-The initial snapshot needed **4 API calls for 159 repositories**: one page each for RaveMaker and ITekBlog, two for ERPXE. Collection follows GitHub’s pagination links, so this scales beyond 100 repositories per account. There are no per-repository requests. Private repositories are excluded. A failure on any account/page, or any configured account returning zero public owned repositories, fails the refresh before replacing the local snapshot and prevents the workflow from deploying incomplete data. The existing published deployment stays available.
+The saved snapshot contains **154 repositories across two accounts** after removing ITekBlog. At these counts, a fresh collection needs **3 API calls**: one page for RaveMaker and two for ERPXE. Collection follows GitHub’s pagination links, so this scales beyond 100 repositories per account. There are no per-repository requests. Private repositories are excluded. A failure on any account/page, or any configured account returning zero public owned repositories, fails the refresh before replacing the local snapshot and prevents the workflow from deploying incomplete data. The existing published deployment stays available.
 
 Nothing in the local commands publishes, commits, or pushes. The workflow is only activated on GitHub after you push it.

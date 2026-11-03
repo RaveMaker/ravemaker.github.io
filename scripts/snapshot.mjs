@@ -9,7 +9,10 @@ export async function loadSnapshot(accounts, root = process.cwd()) {
   const snapshot = JSON.parse(raw);
   if (snapshot.schemaVersion !== 1 || !Array.isArray(snapshot.repositories) || !snapshot.repositories.length || !Number.isFinite(Date.parse(snapshot.generatedAt))) throw new Error('Invalid repository snapshot. Run npm run refresh-data.');
   if (!Array.isArray(snapshot.accounts) || accounts.some(account => !snapshot.accounts.includes(account))) throw new Error('Account configuration changed. Run npm run refresh-data before building.');
-  return snapshot;
+  const selectedAccounts = new Set(accounts.map(account => account.toLowerCase()));
+  const repositories = snapshot.repositories.filter(repo => selectedAccounts.has(repo.owner?.toLowerCase()));
+  if (!repositories.length) throw new Error('No repositories for the configured accounts. Run npm run refresh-data.');
+  return { ...snapshot, accounts, repositories };
 }
 
 export async function loadProfile(config) {
